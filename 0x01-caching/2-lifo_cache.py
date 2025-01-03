@@ -1,17 +1,17 @@
 #!/usr/bin/python3
-"""LRU Cache Replacement Implementation Class
+"""LIFO Cache Replacement Implementation Class
 """
 from threading import RLock
 
 BaseCaching = __import__('base_caching').BaseCaching
 
 
-class LRUCache(BaseCaching):
+class LIFOCache(BaseCaching):
     """
-    An implementation of LRU(Last Recently Used) Cache
+    An implementation of LIFO(Last In Fisrt Out) Cache
 
     Attributes:
-        __keys (list): Stores cache keys from least to most accessed
+        __keys (list): Stores cache keys in order of entry using `.append`
         __rlock (RLock): Lock accessed resources to prevent race condition
     """
     def __init__(self):
@@ -35,10 +35,7 @@ class LRUCache(BaseCaching):
         """ Get an item by key
         """
         with self.__rlock:
-            value = self.cache_data.get(key, None)
-            if key in self.__keys:
-                self._balance(key)
-        return value
+            return self.cache_data.get(key, None)
 
     def _balance(self, keyIn):
         """ Removes the earliest item from the cache at MAX size
@@ -48,7 +45,7 @@ class LRUCache(BaseCaching):
             keysLength = len(self.__keys)
             if keyIn not in self.__keys:
                 if len(self.cache_data) == BaseCaching.MAX_ITEMS:
-                    keyOut = self.__keys.pop(0)
+                    keyOut = self.__keys.pop(keysLength - 1)
                     self.cache_data.pop(keyOut)
             else:
                 self.__keys.remove(keyIn)
