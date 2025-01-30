@@ -1,19 +1,14 @@
-import { createClient, print } from 'redis';
+import redis from 'redis';
 
-const redisClient = createClient();
+const client = redis.createClient();
 
-redisClient.on('error', (error) => {
-  console.log(`Redis client not connected to server: ${error.message}`);
+client.hset("HolbertonSchools", "Portland", 50, redis.print);
+client.hset("HolbertonSchools", "Seattle", 80, redis.print);
+client.hset("HolbertonSchools", "New York", 20, redis.print);
+client.hset("HolbertonSchools", "Bogota", 20, redis.print);
+client.hset("HolbertonSchools", "Cali", 40, redis.print);
+client.hset("HolbertonSchools", "Paris", 2, redis.print);
+
+client.hgetall("HolbertonSchools", function(err, reply) {
+  console.log(reply);
 });
-
-redisClient.on('connect', () => {
-  console.log('Redis client connected to the server');
-});
-
-redisClient.hset('HolbertonSchools', 'Portland', 50, print);
-redisClient.hset('HolbertonSchools', 'Seattle', 80, print);
-redisClient.hset('HolbertonSchools', 'New York', 20, print);
-redisClient.hset('HolbertonSchools', 'Bogota', 20, print);
-redisClient.hset('HolbertonSchools', 'Cali', 40, print);
-redisClient.hset('HolbertonSchools', 'Paris', 42, print);
-redisClient.hgetall('HolbertonSchools', (_error, value) => console.log(value));
